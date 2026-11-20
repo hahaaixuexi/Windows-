@@ -71,7 +71,11 @@ function Get-DingUrl {
 }
 
 function Test-Network {
+    param($Config)
     $targets = @('https://www.baidu.com', 'https://oapi.dingtalk.com')
+    if ($Config -and $Config.networkProbeUrls) {
+        $targets = @($Config.networkProbeUrls)
+    }
     foreach ($target in $targets) {
         try {
             $null = Invoke-WebRequest -Uri $target -TimeoutSec 5 -UseBasicParsing -ErrorAction Stop
@@ -169,7 +173,7 @@ if ($pendingTime) {
 
 Write-Log "Start. device=$deviceName bootTime=$bootTime pending=$isPending dryRun=$DryRun"
 
-if (Test-Network) {
+if (Test-Network -Config $config) {
     $template = if ($isPending) { [string]$config.delayedTemplate } else { [string]$config.onlineTemplate }
     $message = Format-Message -Template $template -Device $deviceName `
         -BootTime $bootTime -SendTime (Get-Date -Format 'yyyy-MM-dd HH:mm:ss')
@@ -191,7 +195,7 @@ $waited = 0
 while ($waited -lt $retryMax) {
     Start-Sleep -Seconds $retryStep
     $waited += $retryStep
-    if (Test-Network) {
+    if (Test-Network -Config $config) {
         $message = Format-Message -Template ([string]$config.delayedTemplate) -Device $deviceName `
             -BootTime $bootTime -SendTime (Get-Date -Format 'yyyy-MM-dd HH:mm:ss')
         if (Send-DingMessage -Content $message -Config $config) {

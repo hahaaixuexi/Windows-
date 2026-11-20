@@ -64,6 +64,9 @@ DingBootNotify/
 │  ├─ 从解压包部署.md    5 步装好（新手先看这个）
 │  ├─ 手动部署.md        不用脚本、纯图形界面的完整步骤
 │  └─ 常见问题.md        310000、收不到消息、任务历史等排查
+├─ tests/
+│  ├─ Simulate.ps1       模拟测试：本地假钉钉 + 临时沙箱
+│  └─ MockDingTalk.py    假钉钉服务器（Python 标准库）
 ├─ logs/                 运行时自动生成（已 gitignore）
 ├─ state/                断网暂存的开机时间（已 gitignore）
 └─ config.json           你的真实配置（已 gitignore）
@@ -143,6 +146,7 @@ Start-ScheduledTask -TaskName DingBootNotify
 | `delayedTemplate` | 否 | 断网补发时的消息模板 | 见示例 |
 | `retryMaxSeconds` | 否 | 断网最长等待秒数 | `600` |
 | `retryStepSeconds` | 否 | 每次探测网络间隔秒数 | `5` |
+| `networkProbeUrls` | 否 | 联网探测地址（数组），默认百度 + 钉钉，内网可改 | 见说明 |
 
 模板占位符：`{device}` 设备名、`{bootTime}` 开机时间、`{sendTime}` 发送时间，`\n` 表示换行。
 
@@ -188,6 +192,18 @@ Windows PowerShell 5.1 读取无 BOM 的 UTF-8 脚本时，会按系统 ANSI 编
 ```
 
 或在「任务计划程序」中删除任务 `DingBootNotify`，再删除安装目录。
+
+## 模拟测试
+
+不想动真实开机任务、也不想往真实群里发消息，可以先跑一遍隔离测试：
+
+```powershell
+powershell -ExecutionPolicy Bypass -File .\tests\Simulate.ps1
+```
+
+临时沙箱 + 本地假钉钉服务器，覆盖 6 个场景：联网推送、断网落盘、联网补发、VBS 静默启动、加签签名、任务计划 BootTrigger。测完自动清理，不读取也不覆盖你的 `config.json`。
+
+详见 [tests/README.md](tests/README.md)。
 
 ## 安全说明
 
