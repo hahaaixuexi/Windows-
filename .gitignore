@@ -1,0 +1,16 @@
+# 本地真实配置：含 Webhook / 加签密钥，绝对不能提交
+config.json
+
+# 运行时产物
+logs/
+state/
+
+# 打包产物
+*.zip
+
+# 编辑器 / 系统
+.idea/
+.vscode/
+*.swp
+.DS_Store
+Thumbs.db

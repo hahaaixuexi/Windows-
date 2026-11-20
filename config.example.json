@@ -1,0 +1,9 @@
+{
+  "webhook": "https://oapi.dingtalk.com/robot/send?access_token=YOUR_ACCESS_TOKEN",
+  "secret": "",
+  "deviceName": "",
+  "onlineTemplate": "【开机提醒】{device} 已开机\n开机时间：{bootTime}\n发送时间：{sendTime}",
+  "delayedTemplate": "【开机提醒】{device} 延迟推送\n记录开机时间：{bootTime}\n联网发送时间：{sendTime}",
+  "retryMaxSeconds": 600,
+  "retryStepSeconds": 5
+}
